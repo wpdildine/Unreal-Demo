@@ -1,6 +1,7 @@
 // My CopyWrite
 
 #include "OpenComponent.h"
+#include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
 
@@ -21,15 +22,21 @@ void UOpenComponent::BeginPlay()
 	Super::BeginPlay();
 
 	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
+	Owner = GetOwner();
 	
 	
 }
 
 void UOpenComponent::OpenDoor()
 {
-	AActor *_actor = GetOwner();
-	FRotator _nRotation = FRotator(0.0f, 180.0f, 0.0f);
-	_actor->SetActorRotation(_nRotation);
+
+	Owner->SetActorRotation(FRotator(0.0f, 180.0f, 0.0f));
+}
+
+void UOpenComponent::CloseDoor()
+{
+	
+	Owner->SetActorRotation(FRotator(0.0f, 90.0f, 0.0f));
 }
 
 
@@ -39,6 +46,13 @@ void UOpenComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	if (_pressurePlate->IsOverlappingActor(ActorThatOpens)) {
 		OpenDoor();
+		//UE_LOG(LogTemp, Warning, TEXT("Open"));
+		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
+	}
+	
+	if (GetWorld()->GetTimeSeconds() - LastDoorOpenTime > DoorCloseDelay) {
+		CloseDoor();
+		//UE_LOG(LogTemp, Warning, TEXT("Close"));
 	}
 	//Opendoor will now be here.
 
