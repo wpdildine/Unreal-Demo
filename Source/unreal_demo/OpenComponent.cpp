@@ -23,6 +23,8 @@ void UOpenComponent::BeginPlay()
 
 	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 	Owner = GetOwner();
+
+	
 	
 	
 }
